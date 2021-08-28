@@ -380,7 +380,7 @@ app.post("/login", function (req, res) {
                             }
                         })
 
-                        var port_number = server.listen(process.env.PORT || 3000);
-                        app.listen(port_number, () => {
+                        let port = process.env.PORT || 3000;
+                        app.listen(port, () => {
                             console.log(`Server started on port ${port}`)
                         });

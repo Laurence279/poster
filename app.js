@@ -21,7 +21,6 @@ app.use(express.urlencoded({
 }));
 // app.use('/static', express.static(path.join(__dirname, 'public')))
 app.use(express.static(__dirname+ '/public'));
-console.log(path.join(__dirname, 'public'));
 app.set('view engine','ejs');
 app.use(session({
     secret: "Secret Message.",
@@ -32,7 +31,6 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-console.log( `mongodb+srv://Laur:${process.env.P}@cluster0.lsmiq.mongodb.net/${process.env.DB}?retryWrites=true&w=majority`);
 mongoose.connect(`mongodb+srv://Laur:${process.env.P}@cluster0.lsmiq.mongodb.net/${process.env.DB}?retryWrites=true&w=majority`, {
     useNewUrlParser: true,
     useUnifiedTopology: true,

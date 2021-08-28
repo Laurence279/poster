@@ -81,9 +81,7 @@ passport.deserializeUser(function (id, done) {
 // testUser.save();
 
 
-app.get('/favicon.ico' , function(req , res){
 
-});
 
 
 app.get("/", function (req, res) {
@@ -190,7 +188,9 @@ app.get("/messages",function(req,res){
 
 app.get("/profile/:profileName", function (req, res) {
 
+
     const profile = req.params.profileName;
+    console.log(profile);
     var userCheck = false;
     RiftUser.find({
         "username": profile

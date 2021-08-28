@@ -1,0 +1,30 @@
+
+body {
+  background-color: #E8ECEF;
+  color:black;
+}
+
+.centered {
+    padding-top: 200px;
+    text-align: center;
+}
+
+.secret-text {
+  text-align: center;
+  font-size: 2rem;
+  color: #fff;
+  background-color: #000;
+}
+
+.container{
+  margin-top: 2rem;
+}
+
+.editField{
+  border: 2px black solid;
+  background-color: silver;
+}
+
+#usernameResponseHidden{
+  color:red;
+}

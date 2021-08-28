@@ -1,0 +1,80 @@
+<%- include('partials/header') %>
+
+
+<div class="container">
+
+    <div class="d-md-flex p-2 bd-highlight">
+
+
+        <div class="card" style="width: 18rem;">
+            <img class="card-img-top" src="/images/profile.png" alt="Card image cap">
+            <div class="card-body">
+                <h5 class="card-title"><%= ((userProfile)[0].username) %></h5>
+            </div>
+            <ul class="list-group list-group-flush">
+
+                <li class="list-group-item">Signed Up: <%= userProfile[0].profile.signedUp%></li>
+                <li class="list-group-item">Posts: <%= userProfile[0].profile.posts%></li>
+                <li class="list-group-item">Last Online: <%= userProfile[0].profile.lastOnline%></li>
+            </ul>
+        </div>
+
+        <div class="d-md-flex p-2 bd-highlight card text-center card col-md-8">
+
+            <form autocomplete="off" action="/profile" method="POST">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Description</h5>
+
+                    <input type="hidden" value="" name="desc" id="descInput">
+                    <p class="card-text editableProfileOption" id="desc"><%= userProfile[0].profile.description%></p>
+
+                </div>
+            </div>
+
+
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Favourite Colour</h5>
+                    <input type="hidden" value="" name="colour"id="colourInput">
+                    <p class="card-text editableProfileOption" id="colour"><%= userProfile[0].profile.favColour%></p>
+
+
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Favourite Fruit</h5>
+                    <input type="hidden" value="" name="fruit" id="fruitInput">
+                    <p class="card-text editableProfileOption" id="fruit"><%= userProfile[0].profile.favFruit%></p>
+
+
+                </div>
+
+            </div>
+
+
+
+<% if (userValidation){ %>
+    <div class="mt-auto p-2 bd-highlight">
+        <button type="button" id="editBtn" href="#" class="btn btn-primary">Edit Profile</a>
+        
+    </div>
+<% } %>
+</form>
+        </div>
+
+
+
+
+
+
+
+    </div>
+
+</div>
+
+<script type="text/javascript" src="/scripts/profile.js" charset="utf-8"></script>
+
+<%- include('partials/footer') %>

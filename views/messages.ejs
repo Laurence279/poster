@@ -1,0 +1,82 @@
+<%- include('partials/header') %>
+
+
+<div class="jumbotron text-center">
+  <div class="container">
+    <i class="fas fa-hands fa-7x"></i>
+    <h1 class="display-3">Messages</h1>
+
+
+    
+    <% let error; if (error){ %>
+     <% alert("The username you entered does not exist, or your message was empty.") %>
+    <% } %>
+
+
+
+
+    <hr>
+    
+
+
+    <% messages.forEach(function(msg){ %>
+      <p class="secret-text"><a href="/profile/<%=`${msg.sender}`%>"><%= `${msg.sender}` %></a>
+        <%=`: ${msg.content}`%></p>
+    <% }) %>
+
+    <hr>
+
+    <div>
+      <form action="/messages" method="POST">
+
+
+
+
+        <label for="usernameInput">To:</label>
+        <br>
+        <input required="required" type="text" placeholder="Username" id="usernameInput" name="username">
+        <br>         <p id="usernameResponseHidden" hidden></p>  <br>
+        <label for="messageInput">Message:</label>
+        <br>
+        <textarea required cols="80" rows="5" placeholder="Message" id="messageInput" name="message"></textarea>
+
+      </div>
+    <br>
+
+        <button class="btn btn-dark btn-lg disabled" role="button" id="sendBtn" type="button">Send</a>
+
+      </form>
+
+
+</div>
+
+
+</div>
+
+<script> 
+
+$('#sendBtn').on('click',function(){
+  if($('#sendBtn').hasClass('disabled')){
+    $('#usernameResponseHidden').animate({opacity:0},200,"linear",function(){
+  $(this).animate({opacity:1},200);
+});
+  }
+})
+
+$('#usernameInput').on('change', function() {
+  $.get('/usercheck?username='+$('#usernameInput').val(), function(response) {  
+    $('#usernameResponseHidden').text(response.message);
+  if ($('#usernameResponseHidden').html() === "user exists"){
+    $('#usernameResponseHidden').attr("hidden","hidden");
+      $('#sendBtn').removeClass("disabled");
+      $('#sendBtn').attr("type","submit");
+  }
+else{
+
+  $('#usernameResponseHidden').removeAttr("hidden")
+  $('#sendBtn').addClass("disabled");
+}})})
+
+  </script>
+
+<%- include('partials/footer') %>

@@ -31,7 +31,7 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-mongoose.connect("mongodb://localhost:27017/riftDB", {
+mongoose.connect("mongodb+srv://Laur:process.env.P@cluster0.lsmiq.mongodb.net/process.env.DB?retryWrites=true&w=majority", {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 });

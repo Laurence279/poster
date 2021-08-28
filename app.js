@@ -9,7 +9,7 @@ const ejs = require('ejs');
 const https = require ("https");
 const path = require('path');
 
-const port = 8000;
+
 const app = express();
 
 
@@ -380,7 +380,7 @@ app.post("/login", function (req, res) {
                             }
                         })
 
-
-                        app.listen(port, () => {
+                        var port_number = server.listen(process.env.PORT || 3000);
+                        app.listen(port_number, () => {
                             console.log(`Server started on port ${port}`)
                         });

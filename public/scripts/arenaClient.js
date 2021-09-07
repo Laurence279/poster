@@ -83,12 +83,12 @@ for(let i = 0; i < matchResultsButtonsArr.length; i++){
         if(i === matchResultsButtonsArr.length-1){
             matchResult = document.getElementById("arenaRoundFinal");
             battleLogTitle.innerHTML = `${matchResult.dataset.combatanta} Vs ${matchResult.dataset.combatantb}`;
-            battleLog.textContent = `${matchResult.dataset.round}: ${matchResult.dataset.combatanta} Fought ${matchResult.dataset.combatantb}`;
+            battleLog.textContent = `${matchResult.dataset.round}: ${matchResult.dataset.combatanta} fought ${matchResult.dataset.combatantb}. ${matchResult.dataset.winner} has won the tournament.`;
         }
         else{
             matchResult = document.getElementById("arenaRound"+[i+1]);
             battleLogTitle.textContent = `${matchResult.dataset.combatanta} Vs ${matchResult.dataset.combatantb}`;
-            battleLog.textContent = `Round ${matchResult.dataset.round}: ${matchResult.dataset.combatanta} Fought ${matchResult.dataset.combatantb}`;
+            battleLog.textContent = `Round ${matchResult.dataset.round}: ${matchResult.dataset.combatanta} fought ${matchResult.dataset.combatantb} ${matchResult.dataset.winner} won.`;
         }
 
     })

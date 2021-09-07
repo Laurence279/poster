@@ -1,0 +1,114 @@
+<%- include('partials/header') %>
+
+
+<div class="jumbotron text-center">
+  <div class="container">
+    <i class="fas fa-hands fa-7x"></i>
+    <h1 class="display-3">Arena</h1>
+    <p class="lead">Test your might in the arena!</p>
+  </div>
+<hr>
+
+  <div class="container">
+
+    <table class="table table-striped">
+      <caption>Participants</caption>
+      <thead class="thead-dark">
+        <tr class="arrow-right">
+          <th colspan="3" scope="row">Participants</th>
+        </tr>
+    
+        <tr>
+    
+          <th scope="col">#</th>
+          <th scope="col">Name</th>
+          <th scope="col">Wins</th>
+          <th scope="col">Losses</th>
+        </tr>
+      </thead>
+      <tbody>
+
+          <% for (let i = 0; i < arenaPlayerList.length; i++){ %>
+            <tr>
+            <th scope="row"><%=i+1%></th>
+            <td><%=arenaPlayerList[i].name%></td>
+            <td>0</td>
+            <td>0</td>
+          </tr>
+         <% } %>
+
+      </tbody>
+    
+    </table>
+    <p>Next Match: <span id="nextMatchTimer"></span> </p>
+    <form action="/arena" method="POST">
+      <button class="btn btn-dark btn-lg" type="submit" >Enter</a>
+    </form>
+  </div>
+  <hr>
+
+
+<div class="container">
+
+  <table class="table table-striped">
+    <thead class="thead-dark">
+      <tr class="arrow-right">
+      </tr>
+  
+      <tr>
+  
+        <th scope="col">Round</th>
+        <th colspan="3" scope="col">Combatants</th>
+        <th scope="col">Result</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% for (let i = 0; i < arenaMatchList.length-1; i++){ %>
+        <tr id="arenaRound<%=arenaMatchList[i].round%>" 
+          data-round="<%=arenaMatchList[i].round%>"
+          data-combatantA="<%=arenaMatchList[i].combatantA%>"
+          data-combatantB="<%=arenaMatchList[i].combatantB%>">
+        <th scope="row"><%=arenaMatchList[i].round%></th>
+        <td><%=arenaMatchList[i].combatantA%></td>
+        <td>Vs</td>
+        <td><%=arenaMatchList[i].combatantB%></td>
+        <td><button class="viewResultBtn btn btn-dark btn-sm" role="button" type="button">View</a></td>
+      </tr>
+     <% } %>
+     <tr>
+      <th scope="row">Winner</th>
+      <th colspan="3"><%=arenaMatchList[arenaMatchList.length-1].combatantA%></th>
+    </tr>
+  
+    </tbody>
+  
+  </table>
+</div>
+<hr>
+
+<div class="container">
+
+  <h1 class="display-4">Battle Log</h1>
+  <p id="battleLogTitle" class="lead"></p>
+  <div class="battleLog">
+    <p id=battleLogText></p>
+      <!-- <p>Laur hit Nonrae on the arm for 2 damage.</p>
+      <p>Nonrae attacked Laur but missed.</p>
+      <p>Laur attacked Nonrae but missed.</p>
+      <p>Nonrae took a moment to focus and reposition.</p>
+      <p>Laur attacked Nonrae but missed.</p>
+      <p>Nonrae hit Laur in the head for 10 damage.</p>
+      <p>Laur collapsed on the floor.</p>
+      <p><b>Winner: Nonrae</b></p> -->
+  </div>
+</div>
+
+
+</div>
+
+
+</div>
+
+<script src="/scripts/arenaClient.js"></script>
+
+<%- include('partials/footer') %>

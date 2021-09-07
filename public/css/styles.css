@@ -17,6 +17,7 @@ body {
 }
 
 .container{
+
   margin-top: 2rem;
 }
 
@@ -27,4 +28,27 @@ body {
 
 #usernameResponseHidden{
   color:red;
+}
+
+
+#hi {
+  width: 0;
+  height: 0;
+  border-top: 50px solid transparent;
+  border-right: 100px solid red;
+  border-bottom: 50px solid transparent;
+}
+
+.battleLog{
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  background-color: grey;
+  min-height: 200px;
+  vertical-align: middle;
+}
+
+#battleLogTitle{
+  text-decoration: underline;
 }

@@ -6,8 +6,10 @@ const passportLocMon = require('passport-local-mongoose');
 const session = require('cookie-session');
 const findOrCreate = require('mongoose-findorcreate')
 const ejs = require('ejs');
-const https = require ("https");
+const https = require("https");
 const path = require('path');
+const Arena = require('./arena');
+const arena = require(__dirname + '/arena');
 
 
 const app = express();
@@ -20,8 +22,8 @@ app.use(express.urlencoded({
     extended: true
 }));
 // app.use('/static', express.static(path.join(__dirname, 'public')))
-app.use(express.static(__dirname+ '/public'));
-app.set('view engine','ejs');
+app.use(express.static(__dirname + '/public'));
+app.set('view engine', 'ejs');
 app.use(session({
     secret: "Secret Message.",
     resave: false,
@@ -49,21 +51,39 @@ const RiftUserSchema = new mongoose.Schema({
     },
     messages: [{
         sender: String,
-        content: String    
+        content: String
     }]
 
 });
+
+const RiftArenaPlayerSchema = new mongoose.Schema({
+    name: String
+})
+
+const RiftArenaMatchSchema = new mongoose.Schema({
+    date: Date,
+    match: [{
+        round: String,
+        combatantA: String,
+        combatantB: String,
+        winner: String
+    }]
+})
 
 const RiftPostSchema = new mongoose.Schema({
     poster: String,
     content: String
 })
 
+
+
 RiftUserSchema.plugin(passportLocMon);
 RiftUserSchema.plugin(findOrCreate);
 
 const RiftUser = new mongoose.model('RiftUser', RiftUserSchema);
 const RiftPost = new mongoose.model('RiftPost', RiftPostSchema);
+const RiftArenaPlayer = new mongoose.model('RiftArenaPlayer', RiftArenaPlayerSchema);
+const RiftArenaMatch = new mongoose.model('RiftArenaMatch', RiftArenaMatchSchema);
 
 passport.use(RiftUser.createStrategy());
 
@@ -80,10 +100,6 @@ passport.deserializeUser(function (id, done) {
 // const testUser = new RiftUser({username: "Test", email: "Test@Test.Test", password: "Test123"});
 // testUser.save();
 
-
-
-
-
 app.get("/", function (req, res) {
     res.render("home.ejs");
 })
@@ -96,7 +112,7 @@ app.get("/register", function (req, res) {
     res.render("register.ejs");
 })
 
-app.post("/profile",function(req,res){
+app.post("/profile", function (req, res) {
     RiftUser.findById(req.user.id, function (err, foundUser) {
         if (err) {
             console.log(err);
@@ -104,7 +120,7 @@ app.post("/profile",function(req,res){
             if (foundUser) {
                 foundUser.profile.description = req.body.desc;
                 foundUser.profile.favColour = req.body.colour;
-                foundUser.profile.favFruit= req.body.fruit;
+                foundUser.profile.favFruit = req.body.fruit;
                 console.log(foundUser);
                 foundUser.save();
                 res.redirect("profile");
@@ -113,74 +129,231 @@ app.post("/profile",function(req,res){
     })
 })
 
-app.get('/usercheck', function(req, res) {
+app.get('/arenaTime', function (req, res) {
+
+    const currentServerTime = new Date();
+
+    res.send({dateOfNextMatch: dateOfNextMatch, currentServerTime: currentServerTime});
+})
+
+let matches = [];
+let dateOfNextMatch;
+
+
+function simulateArena(_callback) {
+    const players = [];
+    RiftArenaPlayer.find({}, function (err, results) {
+        if (err) {
+            console.log(err);
+        } else {
+            results.forEach(function (player) {
+                players.push(player.name);
+            });
+            const newArena = new Arena();
+            matches = newArena.initArena(players);
+            newArena.simulateBattles(matches);
+            _callback(matches);
+        }
+    })
+}
+
+
+
+
+app.get('/arena', function (req, res) {
+
+    if (req.isAuthenticated()) {
+        RiftUser.find({
+            "_id": req.user.id
+        }, function (err, foundUser) {
+            if (err) {
+                console.log(err);
+            } else {
+                RiftArenaMatch.find({},
+                    function (err, results) {
+                        if (err) {
+                            console.log(err);
+                        } else {
+                            console.log(results);
+                            const x = results.length - 1;
+                            const matchID = results[x]._id;
+                            console.log(matchID);
+                            const retrievedDate = results[x].date;
+                            const now = new Date();
+                            console.log("Setting matches to render")
+
+
+                            if (now > retrievedDate) {
+                                console.log("The previous match deadline has passed.");
+                                console.log(results[x].match.length);
+                                if (results[x].match.length == 0) {
+                                    simulateArena(function(matches){
+                                        console.log(matchID);
+                                        RiftArenaMatch.updateOne({_id: matchID}, {
+                                            $set: {
+                                                match: matches
+                                            }
+                                        },function (err, res) {
+                                            if (err) {
+                                                console.log(err);
+                                            } else {
+                                                console.log(res);
+                                                console.log("Done!");
+                                            }
+                                            let newDate = new Date();
+                                            if (newDate.getUTCHours() > 15)
+                                            {
+                                                newDate.setUTCDate(newDate.getUTCDate() + 1);
+                                            }
+
+                                            newDate.setUTCHours(16, 0, 0, 0);
+                                            console.log(newDate);
+                                            const newArenaMatch = RiftArenaMatch({
+                                                date: newDate
+                                            });
+                                            newArenaMatch.save();
+                                            dateOfNextMatch = newArenaMatch.date;
+                                            RiftArenaPlayer.deleteMany({},function(err,results){
+                                                    if(err){
+                                                        console.log(err);
+                                                    }
+                                                    else{
+                                                        console.log(results.deletedCount +" players removed from list.");
+                                                    }
+                                            })
+    
+                                        });
+                                    });
+                                }
+                                else{
+                                    matches = results[x].match;
+                                }
+                            } else {
+                                console.log("The previous match deadline has not yet passed.");
+                                matches = results[x-1].match;
+                                dateOfNextMatch = retrievedDate;
+                            }
+
+                            RiftArenaPlayer.find({}, function (err, results) {
+                                if (err) {
+                                    console.log(err);
+                                } else {
+                                    console.log(matches);
+                                    res.render("arena.ejs", {
+                                        arenaPlayerList: results,
+                                        arenaMatchList: matches
+                                    })
+                                }
+                            })
+                        }
+                    })
+
+            }
+        })
+    } else {
+        res.redirect("/login");
+    }
+});
+
+
+app.post("/arena", function (req, res) {
+
+    const user = {
+        'name': req.user.username
+    };
+    console.log(user);
+    RiftArenaPlayer.findOne(user, function (err, result) {
+        if (err) {
+            console.log(err);
+        } else if (!result) {
+            const newArenaPlayer = new RiftArenaPlayer({
+                name: req.user.username
+            });
+            newArenaPlayer.save();
+        }
+        // RiftArenaPlayer.deleteMany({},function(){
+        //     console.log("Deleted all players");
+        // });
+    })
+    res.redirect("/arena")
+})
+
+app.get('/usercheck', function (req, res) {
     console.log(req.query.username);
-    RiftUser.findOne({username: req.query.username}, function(err, user){
-        if(err) {
-          console.log(err);
+    RiftUser.findOne({
+        username: req.query.username
+    }, function (err, user) {
+        if (err) {
+            console.log(err);
         }
         var message;
-        if(user) {
-          console.log(user)
+        if (user) {
+            console.log(user)
             message = "user exists";
             console.log(message)
         } else {
-            message= "User doesn't exist.";
+            message = "User doesn't exist.";
             console.log(message)
         }
-        res.json({message: message});
+        res.json({
+            message: message
+        });
     });
 });
 
-app.post("/messages",function(req,res){
+app.post("/messages", function (req, res) {
 
-if(req.body.username.length == 0 || req.body.message.length == 0)
-{
-    res.redirect("/messages");
-    return;
-}
-else{
+    if (req.body.username.length == 0 || req.body.message.length == 0) {
+        res.redirect("/messages");
+        return;
+    } else {
 
 
-    var test = { sender: req.user.username, content: req.body.message};
-    console.log(test);
-    RiftUser.find({"username": req.body.username},function(err,foundUsername){
-        if(foundUsername.length===0)
-        {
+        var test = {
+            sender: req.user.username,
+            content: req.body.message
+        };
+        console.log(test);
+        RiftUser.find({
+            "username": req.body.username
+        }, function (err, foundUsername) {
+            if (foundUsername.length === 0) {
 
-            res.redirect("/messages");
-            return;
-        }
-        if(err)
-        {
-            console.log(err);
-        }
-        else{
-            foundUsername[0].messages.push(test);
-            foundUsername[0].save();
-            res.redirect("/messages");
-        }
-});
-}
-
-
-});
-
-
-app.get("/messages",function(req,res){
-    if (req.isAuthenticated()){
-        RiftUser.find({"_id": req.user.id, "messages": {$ne: null}},function(err,foundMessages){
-            if(err)
-            {
+                res.redirect("/messages");
+                return;
+            }
+            if (err) {
                 console.log(err);
+            } else {
+                foundUsername[0].messages.push(test);
+                foundUsername[0].save();
+                res.redirect("/messages");
             }
-            else{
-                res.render("messages.ejs",{messages:foundMessages[0].messages});
-            }
-    
-        })
+        });
     }
-    else{
+
+
+});
+
+
+app.get("/messages", function (req, res) {
+    if (req.isAuthenticated()) {
+        RiftUser.find({
+            "_id": req.user.id,
+            "messages": {
+                $ne: null
+            }
+        }, function (err, foundMessages) {
+            if (err) {
+                console.log(err);
+            } else {
+                res.render("messages.ejs", {
+                    messages: foundMessages[0].messages
+                });
+            }
+
+        })
+    } else {
         res.redirect("/login");
     }
 
@@ -198,8 +371,7 @@ app.get("/profile/:profileName", function (req, res) {
         if (err) {
             console.log(err);
         } else {
-            if(req.user == null)
-            {
+            if (req.user == null) {
                 res.render("profile.ejs", {
                     userProfile: foundProfile,
                     userValidation: userCheck
@@ -253,134 +425,135 @@ app.get("/profile", function (req, res) {
 
 app.post("/login", function (req, res) {
 
-            const date = new Date();
+    const date = new Date();
 
-            const ddMmYyyy = date.toLocaleDateString('en-GB', {
-                month: '2-digit',
-                day: '2-digit',
-                year: 'numeric'
+    const ddMmYyyy = date.toLocaleDateString('en-GB', {
+        month: '2-digit',
+        day: '2-digit',
+        year: 'numeric'
+    });
+
+    const user = new RiftUser({
+        username: req.body.username,
+        password: req.body.password
+    });
+
+    req.login(user, function (err) {
+        if (err) {
+            console.log(err);
+        } else {
+            passport.authenticate("local")(req, res, function () {
+
+
+                RiftUser.findById(req.user.id, function (err, foundUser) {
+                    if (err) {
+                        console.log(err);
+                    } else {
+                        if (foundUser) {
+                            foundUser.profile.lastOnline = ddMmYyyy;
+                            foundUser.save();
+                            res.redirect("/secrets");
+                        }
+                    }
+                });
+            })
+        }
+    })
+});
+
+app.post("/register", function (req, res) {
+
+    const date = new Date();
+
+    const ddMmYyyy = date.toLocaleDateString('en-GB', {
+        month: '2-digit',
+        day: '2-digit',
+        year: 'numeric'
+    });
+
+    RiftUser.register({
+
+
+        username: req.body.username,
+        profile: {
+            signedUp: ddMmYyyy,
+            posts: 0,
+            lastOnline: ddMmYyyy,
+            description: "Write a little bit about yourself.",
+            favColour: "Put your favourite colour here.",
+            favFruit: "Put your favourite fruit here."
+        }
+    }, req.body.password, function (err, user) {
+        if (err) {
+            console.log(err);
+            res.redirect("/register");
+        } else {
+            passport.authenticate("local")(req, res, function () {
+                res.redirect("/secrets");
             });
+        }
+    })
+});
 
-            const user = new RiftUser({
-                username: req.body.username,
-                password: req.body.password
-            });
+app.get("/secrets", function (req, res) {
+    if (req.isAuthenticated()) {
+        RiftPost.find({
+            "content": {
+                $ne: null
+            }
+        }, function (err, foundPosts) {
+            if (err) {
+                console.log(err);
+            } else {
+                if (foundPosts) {
+                    res.render("secrets.ejs", {
+                        posts: foundPosts
+                    });
+                }
+            }
+        });
+    } else {
+        res.redirect("/");
+    }
 
-            req.login(user, function (err) {
-                        if (err) {
-                            console.log(err);
-                        } else {
-                            passport.authenticate("local")(req, res, function () {
+});
 
+app.get("/logout", function (req, res) {
+    req.logout();
+    res.redirect("/");
+});
 
-                                RiftUser.findById(req.user.id, function (err, foundUser) {
-                                    if (err) {
-                                        console.log(err);
-                                    } else {
-                                        if (foundUser) {
-                                            foundUser.profile.lastOnline = ddMmYyyy;
-                                            foundUser.save();
-                                            res.redirect("/secrets");
-                                        }
-                                    }
-                                });
-                            })
-                        }})});
+app.post("/submit", function (req, res) {
+    const newPost = new RiftPost({
+        content: req.body.post
+    });
+    RiftUser.findById(req.user.id, function (err, foundUser) {
+        if (err) {
+            console.log(err);
+        } else {
+            if (foundUser) {
+                foundUser.profile.posts++;
+                newPost.poster = req.user.username;
+                foundUser.save();
+                newPost.save(function () {
+                    res.redirect("/secrets");
+                });
+            }
+        }
+    })
+})
 
-                        app.post("/register", function (req, res) {
+app.get("/submit", function (req, res) {
 
-                            const date = new Date();
+    if (req.isAuthenticated()) {
 
-                            const ddMmYyyy = date.toLocaleDateString('en-GB', {
-                                month: '2-digit',
-                                day: '2-digit',
-                                year: 'numeric'
-                            });
+        res.render("submit.ejs");
+    } else {
+        res.redirect("/login");
+    }
+})
 
-                            RiftUser.register({
-
-
-                                username: req.body.username,
-                                profile: {
-                                    signedUp: ddMmYyyy,
-                                    posts: 0,
-                                    lastOnline: ddMmYyyy,
-                                    description: "Write a little bit about yourself.",
-                                    favColour: "Put your favourite colour here.",
-                                    favFruit: "Put your favourite fruit here."
-                                }
-                            }, req.body.password, function (err, user) {
-                                if (err) {
-                                    console.log(err);
-                                    res.redirect("/register");
-                                } else {
-                                    passport.authenticate("local")(req, res, function () {
-                                        res.redirect("/secrets");
-                                    });
-                                }
-                            })
-                        });
-
-                        app.get("/secrets", function (req, res) {
-                            if (req.isAuthenticated()) {
-                                RiftPost.find({
-                                    "content": {
-                                        $ne: null
-                                    }
-                                }, function (err, foundPosts) {
-                                    if (err) {
-                                        console.log(err);
-                                    } else {
-                                        if (foundPosts) {
-                                            res.render("secrets.ejs", {
-                                                posts: foundPosts
-                                            });
-                                        }
-                                    }
-                                });
-                            }
-                            else{
-                                res.redirect("/");
-                            }
-
-                        });
-
-                        app.get("/logout", function (req, res) {
-                            req.logout();
-                            res.redirect("/");
-                        });
-
-                        app.post("/submit", function (req, res) {
-                            const newPost = new RiftPost({
-                                content: req.body.post
-                            });
-                            RiftUser.findById(req.user.id, function (err, foundUser) {
-                                if (err) {
-                                    console.log(err);
-                                } else {
-                                    if (foundUser) {
-                                        foundUser.profile.posts++;
-                                        newPost.poster = req.user.username;
-                                        foundUser.save();
-                                        newPost.save(function () {
-                                            res.redirect("/secrets");
-                                        });
-                                    }
-                                }
-                            })
-                        })
-
-                        app.get("/submit", function (req, res) {
-
-                            if (req.isAuthenticated()) {
-
-                                res.render("submit.ejs");
-                            } else {
-                                res.redirect("/login");
-                            }
-                        })
-
-                        let port = process.env.PORT || 3000;
-                        app.listen(port, () => {
-                            console.log(`Server started on port ${port}`)
-                        });
+let port = process.env.PORT || 3000;
+app.listen(port, () => {
+    console.log(`Server started on port ${port}`)
+});

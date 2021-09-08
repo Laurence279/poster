@@ -9,6 +9,8 @@
   </div>
 <hr>
 
+
+
   <div class="container">
 
     <table class="table table-striped">
@@ -31,9 +33,10 @@
           <% for (let i = 0; i < arenaPlayerList.length; i++){ %>
             <tr>
             <th scope="row"><%=i+1%></th>
-            <td><%=arenaPlayerList[i].name%></td>
-            <td>0</td>
-            <td>0</td>
+            <td><a href="/profile/<%=`${arenaPlayerList[i].username}`%>">
+              <%=arenaPlayerList[i].username%></a></td>
+            <td><%=arenaPlayerList[i].profile.arenaWins ? arenaPlayerList[i].profile.arenaWins : "0"%></td>
+            <td><%=arenaPlayerList[i].profile.arenaLosses ? arenaPlayerList[i].profile.arenaLosses : "0"%></td>
           </tr>
          <% } %>
 
@@ -68,7 +71,7 @@
           data-round="<%=arenaMatchList[i].round%>"
           data-combatantA="<%=arenaMatchList[i].combatantA%>"
           data-combatantB="<%=arenaMatchList[i].combatantB%>"
-          data-winner="<%arenaMatchList[i].winner%>">
+          data-winner="<%=arenaMatchList[i].winner%>">
         <th scope="row"><%=arenaMatchList[i].round%></th>
         <td><%=arenaMatchList[i].combatantA%></td>
         <td>Vs</td>

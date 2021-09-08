@@ -88,7 +88,7 @@ for(let i = 0; i < matchResultsButtonsArr.length; i++){
         else{
             matchResult = document.getElementById("arenaRound"+[i+1]);
             battleLogTitle.textContent = `${matchResult.dataset.combatanta} Vs ${matchResult.dataset.combatantb}`;
-            battleLog.textContent = `Round ${matchResult.dataset.round}: ${matchResult.dataset.combatanta} fought ${matchResult.dataset.combatantb} ${matchResult.dataset.winner} won.`;
+            battleLog.textContent = `Round ${matchResult.dataset.round}: ${matchResult.dataset.combatanta} fought ${matchResult.dataset.combatantb}. ${matchResult.dataset.winner} won.`;
         }
 
     })

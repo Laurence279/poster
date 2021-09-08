@@ -47,7 +47,9 @@ const RiftUserSchema = new mongoose.Schema({
         lastOnline: String,
         description: String,
         favColour: String,
-        favFruit: String
+        favFruit: String,
+        arenaWins: Number,
+        arenaLosses: Number
     },
     messages: [{
         sender: String,
@@ -188,7 +190,8 @@ app.get('/arena', function (req, res) {
                                 console.log(results[x].match.length);
                                 if (results[x].match.length == 0) {
                                     simulateArena(function(matches){
-                                        console.log(matchID);
+                                        //Get Arena Results and Save to DB
+                                        //________________________________
                                         RiftArenaMatch.updateOne({_id: matchID}, {
                                             $set: {
                                                 match: matches
@@ -200,6 +203,54 @@ app.get('/arena', function (req, res) {
                                                 console.log(res);
                                                 console.log("Done!");
                                             }
+
+                                            //Update Arena Winner Profile Wins
+                                            const finalArenaRound = matches.filter((match) => match.round === "Result");
+                                            const arenaWinner = finalArenaRound[0].combatantA;    
+                                            if(arenaWinner !== "Bot"){
+                                            console.log(arenaWinner);          
+                                            RiftUser.updateOne({username: arenaWinner},{
+                                                $inc: {
+                                                    'profile.arenaWins' : +1
+                                                }
+                                            },{upsert:true,new:true},function(err,res){
+                                                if(err){
+                                                    console.log(err);
+                                                }
+                                            })
+                                        }
+
+                                            //Update Arena Losers Profile Losses
+
+                                            const arenaLosers = matches.filter(function (match) {
+                                                if (!match.winner || match.combatantA === "Bot" || match.combatantB === "Bot") {
+                                                  return null;
+                                                } else {
+                                                  return match;
+                                                }
+                                              }).map(function (match) {
+                                                return match.winner !== match.combatantA
+                                                  ? match.combatantA
+                                                  : match.combatantB;
+                                              });
+
+                                              arenaLosers.forEach(function(loser){
+                                                  RiftUser.updateOne({username: loser},{
+                                                      $inc: {
+                                                          'profile.arenaLosses' : +1
+                                                      }
+                                                  },{upsert:true, new: true},function(err,res){
+                                                      if(err){
+                                                          console.log(err)
+                                                      }
+                                                  })
+                                              })
+
+
+
+                                            //Setting New Date Below This Line
+                                            //________________________________
+
                                             let newDate = new Date();
                                             if (newDate.getUTCHours() > 15)
                                             {
@@ -213,14 +264,21 @@ app.get('/arena', function (req, res) {
                                             });
                                             newArenaMatch.save();
                                             dateOfNextMatch = newArenaMatch.date;
-                                            RiftArenaPlayer.deleteMany({},function(err,results){
-                                                    if(err){
-                                                        console.log(err);
-                                                    }
-                                                    else{
-                                                        console.log(results.deletedCount +" players removed from list.");
-                                                    }
-                                            })
+
+
+                                            //Clear Arena Player List
+                                            //_______________________
+                                            // RiftArenaPlayer.deleteMany({},function(err,results){
+                                            //         if(err){
+                                            //             console.log(err);
+                                            //         }
+                                            //         else{
+                                            //             console.log(results.deletedCount +" players removed from list.");
+                                            //         }
+                                            // })
+                                            //DONT FORGET TO RE-ENABLE THIS
+
+
     
                                         });
                                     });
@@ -234,15 +292,38 @@ app.get('/arena', function (req, res) {
                                 dateOfNextMatch = retrievedDate;
                             }
 
+                            //Get Participants Who Have Entered This Arena
                             RiftArenaPlayer.find({}, function (err, results) {
                                 if (err) {
                                     console.log(err);
                                 } else {
-                                    console.log(matches);
-                                    res.render("arena.ejs", {
-                                        arenaPlayerList: results,
+
+
+                                    function getRiftUsers(){
+                                        return Promise.all(results.map(function (player) {
+                                            return RiftUser.findOne({
+                                                username: player.name
+                                            }).then(function(result){
+                                                return Promise.resolve(result);
+                                                }, function(error){
+                                                    return Promise.reject(error);
+                                                });
+                                        }))
+                                    }
+
+                                    getRiftUsers().then(result => {
+                                        const test = result;
+                                        console.log(typeof (test));
+                                        res.render("arena.ejs", {
+                                        arenaPlayerList: test,
                                         arenaMatchList: matches
-                                    })
+                                })});
+                            
+                                        
+
+
+                                           
+
                                 }
                             })
                         }
@@ -271,9 +352,6 @@ app.post("/arena", function (req, res) {
             });
             newArenaPlayer.save();
         }
-        // RiftArenaPlayer.deleteMany({},function(){
-        //     console.log("Deleted all players");
-        // });
     })
     res.redirect("/arena")
 })

@@ -268,14 +268,14 @@ app.get('/arena', function (req, res) {
 
                                             //Clear Arena Player List
                                             //_______________________
-                                            // RiftArenaPlayer.deleteMany({},function(err,results){
-                                            //         if(err){
-                                            //             console.log(err);
-                                            //         }
-                                            //         else{
-                                            //             console.log(results.deletedCount +" players removed from list.");
-                                            //         }
-                                            // })
+                                            RiftArenaPlayer.deleteMany({},function(err,results){
+                                                    if(err){
+                                                        console.log(err);
+                                                    }
+                                                    else{
+                                                        console.log(results.deletedCount +" players removed from list.");
+                                                    }
+                                            })
                                             //DONT FORGET TO RE-ENABLE THIS
 
 

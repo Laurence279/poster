@@ -160,9 +160,11 @@ function simulateArena(_callback) {
     })
 }
 
-simulateArena(function(matches){
-    console.log(matches);
-});
+
+// ARENA TESTING
+// simulateArena(function(matches){
+//     console.log(matches);
+// });
 
 
 app.get('/arena', function (req, res) {
@@ -314,10 +316,10 @@ app.get('/arena', function (req, res) {
                                     }
 
                                     getRiftUsers().then(result => {
-                                        const test = result;
-                                        console.log(typeof (test));
+                                        const players = result;
+                                        console.log(typeof (players));
                                         res.render("arena.ejs", {
-                                        arenaPlayerList: test,
+                                        arenaPlayerList: players,
                                         arenaMatchList: matches
                                 })});
                             

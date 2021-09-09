@@ -70,6 +70,8 @@ fetch("/arenaTime")
 
 // View Match Results
 
+
+
 const matchResultsButtons = document.getElementsByClassName("viewResultBtn");
 const matchResultsButtonsArr = Array.prototype.slice.call(matchResultsButtons);
 
@@ -83,12 +85,12 @@ for(let i = 0; i < matchResultsButtonsArr.length; i++){
         if(i === matchResultsButtonsArr.length-1){
             matchResult = document.getElementById("arenaRoundFinal");
             battleLogTitle.innerHTML = `${matchResult.dataset.combatanta} Vs ${matchResult.dataset.combatantb}`;
-            battleLog.textContent = `${matchResult.dataset.round}: ${matchResult.dataset.combatanta} fought ${matchResult.dataset.combatantb}. ${matchResult.dataset.winner} has won the tournament.`;
+            battleLog.innerHTML = `${matchResult.dataset.log.replace(/[ ]*,+/g, '<br>')} <br>${matchResult.dataset.winner} has won the tournament.`;
         }
         else{
             matchResult = document.getElementById("arenaRound"+[i+1]);
             battleLogTitle.textContent = `${matchResult.dataset.combatanta} Vs ${matchResult.dataset.combatantb}`;
-            battleLog.textContent = `Round ${matchResult.dataset.round}: ${matchResult.dataset.combatanta} fought ${matchResult.dataset.combatantb}. ${matchResult.dataset.winner} won.`;
+            battleLog.innerHTML = matchResult.dataset.log.replace(/[ ]*,+/g, '<br>');
         }
 
     })

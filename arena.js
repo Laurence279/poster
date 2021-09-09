@@ -59,6 +59,8 @@ var Arena = function(){};
 
 // }
 
+
+
 Arena.prototype.initArena = function(playerArr){
     let players = playerArr;
     //Take array of combatants as parameter
@@ -119,11 +121,91 @@ function roll(sides){
     return Math.floor(Math.random()*sides + 1);
 }
 
-function generateDamage(){
-    let dmg = roll(6);
+function generateDamage(modifier){
+    let dmg = roll(6) + modifier;
+    if (dmg <= 0) dmg = 1;
     console.log("Did " + dmg + " points of damage");
     return dmg;
 }
+
+function generateAction(preBattleActions, bodyParts, attackActions, currentPlayer, otherPlayer){
+
+    const actionObj = {
+        name: currentPlayer.name,
+        otherName: otherPlayer.name
+    };
+
+    const attackRoll = roll(100);
+    if(attackRoll > 20){
+        actionObj.action = "attack";
+    }
+    else{
+        actionObj.action = preBattleActions[roll(preBattleActions.length)-1];
+    }
+
+
+    if(actionObj.action === "attack"){
+        actionObj.target = bodyParts[roll(bodyParts.length)-1]
+        if(attackRoll > 50){
+            actionObj.attackAction = "hit";
+        }
+        else{
+            actionObj.attackAction = attackActions[roll(attackActions.length)-1];
+        }
+
+        //Damage modifiers
+        if(actionObj.target === "head"){
+            actionObj.modifier = roll(6);
+        }
+        else{
+            actionObj.modifier = 1;
+        }
+
+
+    }
+
+
+    
+    return actionObj;
+}
+
+function generateTurnLog(obj){
+
+    if(obj.death)
+    {
+        console.log(`Returning ${obj.otherName} collapsed to the floor.`)
+        return `${obj.otherName} collapsed to the floor.`;
+    }
+
+    let str;
+
+        switch(obj.action){
+            case "attack":
+                if(obj.attackAction === "hit"){
+                    str = `${obj.name} hit ${obj.otherName} in the ${obj.target} for ${obj.dmg} damage.`
+                }
+                else if(obj.attackAction === "missed"){
+                    str =  `${obj.name} attacked ${obj.otherName} in the ${obj.target} but missed.`;
+                }
+                else if(obj.attackAction === "blocked"){
+                    str =  `${obj.name} attacked ${obj.otherName} in the ${obj.target} but it was blocked.`;
+                }
+                break;
+            case "stumbled":
+                str =  `${obj.name} lost their footing and clumsily stumbled.`
+                break;
+            case "focused":
+                str =  `${obj.name} took a moment to focus and reposition.`
+                break;
+        }
+
+
+
+
+        console.log(`Returning ${str}`);
+    return str;
+}
+
 
 initBattle = function(matchObj){
     // Take match object as parameter containing combatants
@@ -136,28 +218,52 @@ initBattle = function(matchObj){
     matchObj.log = [];
 
 
+    const preBattleActions = ["attack", "stumbled", "focused"];
+    const bodyParts = ["head", "neck", "chest", "arm", "leg", "stomach", "groin", "foot"];
+    const attackActions = ["hit", "missed", "blocked"];
 
 
     let i = 0;
-    let playerA = {name: combatantA, hp: 10};
-    let playerB = {name: combatantB, hp: 10};
+
+    let playerA = {name: combatantA, luck: roll(6), hp: 10};
+    let playerB = {name: combatantB, luck: roll(6), hp: 10};
+    playerA.hp += playerA.luck;
+    playerB.hp += playerB.luck;
     let currentPlayer = playerA;
     let otherPlayer = playerB;
     let lastPlayer;
+    console.log("Starting new Round");
     while (playerA.hp >=1 || playerB.hp >= 1){
         console.log("current turn is " + currentPlayer.name);
-
         console.log(currentPlayer.name + " HP is " + currentPlayer.hp);
-        let dmg = generateDamage();
-        otherPlayer.hp = otherPlayer.hp - dmg;
-        if(otherPlayer.hp <= 0){
-            otherPlayer.hp = 0
-            console.log(otherPlayer.name + " has been defeated.");
-            winner = currentPlayer.name;
-            break;
+        const action = generateAction(preBattleActions, bodyParts, attackActions, currentPlayer, otherPlayer);
+        console.log(currentPlayer.name + " action before checking if a hit was made.");
+        console.log(action);
+        if(action.attackAction === "hit"){
+            const dmg = generateDamage(action.modifier + currentPlayer.luck - otherPlayer.luck);
+            action.dmg = dmg;
+            otherPlayer.hp = otherPlayer.hp - dmg;
+            console.log("damage is " + dmg);
+            console.log(otherPlayer.name + " HP is now " + otherPlayer.hp);
+
+
+            if(otherPlayer.hp <= 0){
+                otherPlayer.hp = 0;
+                matchObj.log.push(generateTurnLog(action));
+                action.death = true;
+                console.log("otherplayer is dead due to -" + dmg);
+                matchObj.log.push(generateTurnLog(action));
+                winner = currentPlayer.name;
+                break;
+            }
+
         }
-        console.log(otherPlayer.name + " HP is now " + otherPlayer.hp);
-        matchObj.log.push(`${currentPlayer.name} hit ${otherPlayer.name} for ${dmg} damage.`);
+
+        console.log(currentPlayer.name + " action after checking if a hit was made.");
+        console.log(action);
+        matchObj.log.push(generateTurnLog(action));
+
+        //Next turn
         lastPlayer = currentPlayer;
         currentPlayer = otherPlayer;
         otherPlayer = lastPlayer;

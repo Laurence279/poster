@@ -115,17 +115,55 @@ Arena.prototype.initArena = function(playerArr){
 
 }
 
+function roll(sides){
+    return Math.floor(Math.random()*sides + 1);
+}
+
+function generateDamage(){
+    let dmg = roll(6);
+    console.log("Did " + dmg + " points of damage");
+    return dmg;
+}
+
 initBattle = function(matchObj){
     // Take match object as parameter containing combatants
     let combatantA = matchObj.combatantA;
     let combatantB = matchObj.combatantB;
     let winner;
-    // Generate random winner
-    let roll = Math.floor(Math.random()*100)
     // Output winner
-    roll > 50 ? console.log(combatantA + " Defeated "+ combatantB) : console.log(combatantB + " Defeated "+ combatantA);
 
-    roll > 50 ? winner = combatantA : winner = combatantB;
+
+    matchObj.log = [];
+
+
+
+
+    let i = 0;
+    let playerA = {name: combatantA, hp: 10};
+    let playerB = {name: combatantB, hp: 10};
+    let currentPlayer = playerA;
+    let otherPlayer = playerB;
+    let lastPlayer;
+    while (playerA.hp >=1 || playerB.hp >= 1){
+        console.log("current turn is " + currentPlayer.name);
+
+        console.log(currentPlayer.name + " HP is " + currentPlayer.hp);
+        let dmg = generateDamage();
+        otherPlayer.hp = otherPlayer.hp - dmg;
+        if(otherPlayer.hp <= 0){
+            otherPlayer.hp = 0
+            console.log(otherPlayer.name + " has been defeated.");
+            winner = currentPlayer.name;
+            break;
+        }
+        console.log(otherPlayer.name + " HP is now " + otherPlayer.hp);
+        matchObj.log.push(`${currentPlayer.name} hit ${otherPlayer.name} for ${dmg} damage.`);
+        lastPlayer = currentPlayer;
+        currentPlayer = otherPlayer;
+        otherPlayer = lastPlayer;
+    }
+
+    console.log("winner is " + winner);
     matchObj.winner = winner;
     return winner;
 }

@@ -68,7 +68,8 @@ const RiftArenaMatchSchema = new mongoose.Schema({
         round: String,
         combatantA: String,
         combatantB: String,
-        winner: String
+        winner: String,
+        log: Array
     }]
 })
 
@@ -159,7 +160,9 @@ function simulateArena(_callback) {
     })
 }
 
-
+simulateArena(function(matches){
+    console.log(matches);
+});
 
 
 app.get('/arena', function (req, res) {
@@ -276,7 +279,6 @@ app.get('/arena', function (req, res) {
                                                         console.log(results.deletedCount +" players removed from list.");
                                                     }
                                             })
-                                            //DONT FORGET TO RE-ENABLE THIS
 
 
     
@@ -635,3 +637,5 @@ let port = process.env.PORT || 3000;
 app.listen(port, () => {
     console.log(`Server started on port ${port}`)
 });
+
+

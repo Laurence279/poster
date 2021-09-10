@@ -181,7 +181,7 @@ app.post("/profile", function (req, res) {
 
 app.get('/arenaTime', function (req, res) {
 
-    const currentServerTime = new Date();
+    const currentServerTime = new Date().toUTCString();
     console.log("Current server time is "+ currentServerTime);
     console.log("Next Match is scheduled for " + dateOfNextMatch);
     res.send({dateOfNextMatch: dateOfNextMatch, currentServerTime: currentServerTime});

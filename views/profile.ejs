@@ -21,7 +21,7 @@
 
         <div class="d-md-flex p-2 bd-highlight card text-center card col-md-8">
 
-            <form autocomplete="off" action="/profile" method="POST">
+            <form id="form" autocomplete="off" action="/profile" method="POST">
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">Description</h5>
@@ -54,14 +54,14 @@
             </div>
 
 
-
+        </form>
 <% if (userValidation){ %>
     <div class="mt-auto p-2 bd-highlight">
-        <button type="button" id="editBtn" href="#" class="btn btn-primary">Edit Profile</a>
+        <button form="form" type="button" id="editBtn" href="#" class="btn btn-dark">Edit Profile</a>
         
     </div>
 <% } %>
-</form>
+
         </div>
 
 

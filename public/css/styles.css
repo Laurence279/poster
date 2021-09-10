@@ -13,7 +13,7 @@ body {
   text-align: center;
   font-size: 2rem;
   color: #fff;
-  background-color: #000;
+  background-color: #4B5D67;
 }
 
 .container{
@@ -28,6 +28,22 @@ body {
 
 #usernameResponseHidden{
   color:red;
+}
+
+table a{
+  color: #006359;
+}
+
+table a:hover{
+  color: #006359;
+}
+
+a{
+  color:#00BDAA;
+}
+
+a:hover{
+  color: blue;
 }
 
 
@@ -52,3 +68,5 @@ body {
 #battleLogTitle{
   text-decoration: underline;
 }
+
+

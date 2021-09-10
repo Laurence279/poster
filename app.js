@@ -10,6 +10,51 @@ const https = require("https");
 const path = require('path');
 const Arena = require('./arena');
 const arena = require(__dirname + '/arena');
+const nodemailer = require("nodemailer");
+const bcrypt = require('bcrypt');
+const { hasUncaughtExceptionCaptureCallback } = require('process');
+const saltRounds = 10;
+const crypto = require('crypto')
+
+
+// async..await is not allowed in global scope, must use a wrapper
+async function sendResetMail(userEmail, link) {
+    // Generate test SMTP service account from ethereal.email
+
+
+
+
+
+
+    // create reusable transporter object using the default SMTP transport
+    let transporter = nodemailer.createTransport({
+        host: 'smtp-mail.outlook.com',
+        secureConnection: false, // TLS requires secureConnection to be false
+        port: 587, // port for secure SMTP
+        tls: {
+           ciphers:'SSLv3'
+        },
+        auth: {
+            user: 'riftworld@outlook.com',
+            pass: process.env.OUT
+        }
+    });
+  
+    // send mail with defined transport object
+    let info = await transporter.sendMail({
+        from: '"Rift World" riftworld@outlook.com',
+        to: userEmail,
+        subject: 'Reset Password',
+        text: `Hello! It seems you have forgotten your password. No matter, just follow the link below to reset it: ${link}`,
+        html: `<p>Hello! It seems you have forgotten your password. No matter, just follow the link below to reset it.</p><a href=${link}>Reset Password</a>`
+    });
+  
+    console.log("Message sent: %s", info.messageId);
+    // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
+
+  }
+  
+
 
 
 const app = express();
@@ -41,6 +86,8 @@ mongoose.connect(`mongodb+srv://Laur:${process.env.P}@cluster0.lsmiq.mongodb.net
 const RiftUserSchema = new mongoose.Schema({
     username: String,
     password: String,
+    email: String,
+    resetPasswordToken: String,
     profile: {
         signedUp: String,
         posts: Number,
@@ -543,10 +590,79 @@ app.post("/login", function (req, res) {
     })
 });
 
+app.get("/reset", function (req,res){
+    res.render("reset.ejs");
+});
+
+var test;
+
+app.post("/reset",function (req,res){
+    const email = req.body.email;
+    RiftUser.findOne({email:email},function(err,result){
+        if(err || result == null){
+           return (res.send("No user found with that email."));
+        }
+        else{
+            const token = crypto.randomBytes(32).toString('hex')
+            bcrypt.hash(token, saltRounds).then(function(hash) {
+                
+                RiftUser.updateOne({email:email},{
+                    $set: {
+                        'resetPasswordToken' : hash,
+                    }
+                },{upsert:true, new: true},function(err,res){
+                    if(err){
+                        console.log(err)
+                    }
+                })
+                
+                let link = "https://riftworld.herokuapp.com/reset-request/" + email + "/" + token;
+                sendResetMail(email,link).catch(console.error);
+                res.send("Reset Email sent!");
+            });
+        }
+    })
+
+
+})
+
+app.route("/reset-request/:email/:token").get(function(req,res){
+
+    RiftUser.findOne({email: req.params.email},function(err, result){
+        if(err){
+            console.log(err);
+        }
+        else{
+            bcrypt.compare(req.params.token, result.resetPasswordToken).then(function(result) {
+                result ? res.render("reset-authorise.ejs", {email: req.params.email, token: req.params.token}) : res.send("Invalid token. Please contact riftworld123@outlook.com for more help.");
+        })
+    }})
+}).post(function(req,res){
+    RiftUser.findOne({email: req.params.email},function(err, user){
+        if(err){
+            console.log(err);
+        }
+        else{
+    bcrypt.compare(req.params.token, user.resetPasswordToken).then(function(result) {
+        if(result){
+            user.resetPasswordToken = "";
+            user.setPassword(req.body.pw,function(){
+                user.save();
+            });
+            res.send("Passsword changed successfully!");
+        } else{
+            res.send("Invalid token. Please contact riftworld123@outlook.com for more help.");
+        }
+    })
+
+    }
+})})
+
+
 app.post("/register", function (req, res) {
 
     const date = new Date();
-
+    
     const ddMmYyyy = date.toLocaleDateString('en-GB', {
         month: '2-digit',
         day: '2-digit',
@@ -557,6 +673,7 @@ app.post("/register", function (req, res) {
 
 
         username: req.body.username,
+        email: req.body.email,
         profile: {
             signedUp: ddMmYyyy,
             posts: 0,
@@ -636,8 +753,17 @@ app.get("/submit", function (req, res) {
 })
 
 let port = process.env.PORT || 3000;
-app.listen(port, () => {
-    console.log(`Server started on port ${port}`)
+server = app.listen(port, () => {
+    let {address, family, port} = server.address();
+    console.log("server started at https://" + address + ":" + port);
 });
+
+
+
+
+
+
+
+
 
 

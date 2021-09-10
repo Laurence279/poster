@@ -1,27 +1,21 @@
 <%- include('partials/header') %>
+
 <div class="container mt-5">
-  <h1>Register</h1>
+  <h1>Reset Passsword</h1>
 
   <div class="row">
     <div class="col-sm-8">
       <div class="card">
         <div class="card-body">
 
-          <!-- Makes POST request to /register route -->
-          <form autocomplete="off" action="/register" method="POST">
+          <!-- Makes POST request to /reset route -->
+          <form autocomplete="off" action="/reset" method="POST">
             <div class="form-group">
-              <label for="text">Username</label>
-              <input required type="text" autocomplete="off" class="form-control" name="username">
+              <label for="text">Email</label>
+              <input type="email" required autocomplete="off" class="form-control" name="email">
             </div>
-            <div class="form-group">
-              <label for="password">Password</label>
-              <input required autocomplete="off" type="password" class="form-control" name="password">
-            </div>
-            <div class="form-group">
-              <label for="email">Email</label>
-              <input required autocomplete="off" type="email" class="form-control" name="email">
-            </div>
-            <button type="submit" class="btn btn-dark">Register</button>
+            <button type="submit" class="btn btn-dark">Reset</button>
+            <a href="/login" class="btn btn-light">Go Back</a>
           </form>
 
         </div>

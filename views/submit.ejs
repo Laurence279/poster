@@ -9,7 +9,8 @@
     <form action="/submit" method="POST">
 
       <div class="form-group">
-        <input autocomplete="off" type="text" class="form-control text-center" name="post" placeholder="Text">
+        <input maxlength="200" id="textInput" autocomplete="off" type="text" class="form-control text-center" name="post" placeholder="Text">
+        <h6 id="charsRem" class="card-subtitle mb-2 text-muted"></h6>
       </div>
       <button type="submit" class="btn btn-dark">Submit</button>
     </form>
@@ -17,4 +18,6 @@
 
   </div>
 </div>
+
+<script src="scripts/submit.js"></script>
 <%- include('partials/footer') %>

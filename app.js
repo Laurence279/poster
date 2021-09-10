@@ -182,7 +182,8 @@ app.post("/profile", function (req, res) {
 app.get('/arenaTime', function (req, res) {
 
     const currentServerTime = new Date();
-
+    console.log("Current server time is "+ currentServerTime);
+    console.log("Next Match is scheduled for " + dateOfNextMatch);
     res.send({dateOfNextMatch: dateOfNextMatch, currentServerTime: currentServerTime});
 })
 
@@ -365,6 +366,7 @@ app.get('/arena', function (req, res) {
                                     getRiftUsers().then(result => {
                                         const players = result;
                                         console.log(typeof (players));
+
                                         res.render("arena.ejs", {
                                         arenaPlayerList: players,
                                         arenaMatchList: matches

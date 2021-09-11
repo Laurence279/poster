@@ -1,12 +1,12 @@
 <%- include('partials/header') %>
 
 
-<div class="container">
+<div class="container profile">
 
     <div class="d-md-flex p-2 bd-highlight">
 
 
-        <div class="card" style="width: 18rem;">
+        <div class="card border-dark border-right-0" style="width: 18rem;">
             <img class="card-img-top" src="/images/profile.png" alt="Card image cap">
             <div class="card-body">
                 <h5 class="card-title"><%= ((userProfile).username) %></h5>
@@ -19,11 +19,11 @@
             </ul>
         </div>
 
-        <div class="d-md-flex p-2 bd-highlight card text-center col-md-8 flex-column justify-content-start">
+        <div class="d-md-flex border-dark p-2 bd-highlight card text-center col-md-8 flex-column justify-content-start">
 
             <form id="form" autocomplete="off" action="/profile" method="POST">
             <div class="card">
-                <div class="card-body">
+                <div class="card-body ">
                     <h5 class="card-title">Description</h5>
                     <input type="hidden" value="" name="desc" id="descInput">
                     <p class="card-text editableProfileOption" id="desc"><%= userProfile.profile.description%></p>
@@ -58,10 +58,12 @@
 
         </form>
 
-        <div id="test">
+        <div id="profileCardLogo">
             <div  class="border-0 card d-flex flex-column-reverse">
                 <div class="card-body">
-                    <h1 class="display-1">Poster</h1>
+                    <i class="fas fa-hands fa-5x"></i>
+                    <h1 class="display-3">Poster</h1>
+
                 </div>
                 
             </div>
@@ -74,6 +76,7 @@
 
 <% if (userValidation){ %>
     <div class="mt-auto p-2 bd-highlight">
+        
         <button form="form" type="button" id="editBtn" href="#" class="btn btn-dark">Edit Profile</a>
         
     </div>

@@ -7,6 +7,13 @@ body {
   
 }
 
+.profile div{
+  background-color: #E8ECEF;
+}
+
+.profile li{
+  background-color: #E8ECEF;
+}
 
 .jumbotron{
   margin:0;
@@ -31,7 +38,7 @@ h1{
   font-family: 'Nanum Gothic Coding', monospace;
 }
 
-#test{
+#profileCardLogo{
   width:100%;
   height: 100%;
 display:flex;
@@ -102,13 +109,6 @@ a:hover{
 }
 
 
-#hi {
-  width: 0;
-  height: 0;
-  border-top: 50px solid transparent;
-  border-right: 100px solid red;
-  border-bottom: 50px solid transparent;
-}
 
 .battleLog{
   display:flex;

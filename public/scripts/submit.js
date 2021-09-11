@@ -38,3 +38,11 @@ function updateCharsRemainingText(element, maxSize){
     let charsRemaining = maxSize - element.value.length;
     return charsRemaining + " Characters Remaining.";
 }
+
+textInput.addEventListener("blur",function(){
+    charsRem.setAttribute("hidden",true);
+})
+
+textInput.addEventListener("click",function(){
+    charsRem.removeAttribute("hidden");
+})

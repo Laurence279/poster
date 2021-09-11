@@ -1,16 +1,25 @@
 <%- include('partials/header') %>
 
 
-<div class="jumbotron centered">
+<div class="jumbotron home text-center">
   <div class="container">
     <i class="fas fa-hands fa-7x"></i>
-    <i class="bi bi-wind"></i>
-    <h1 class="display-3">Rift World</h1>
-    <p class="lead">Register and try it out</p>
-    <hr>
-    <a class="btn btn-light btn-lg" href="/register" role="button">Register</a>
-    <a class="btn btn-dark btn-lg" href="/login" role="button">Login</a>
+    <h1 class="display-3">Welcome to Poster</h1>
+    <p class="lead">Post something and introduce yourself</p>
 
+
+<div class="post-container">
+    <% posts.forEach(function(post){ %>
+      <p class="secret-text"><a href="/profile/<%=`${post.poster}`%>"><%=`${post.poster}:`%></a>
+        <%=`${post.content}`%></p>
+    <% }) %>
+  </div>
+
+
+  
+    
+    <a class="btn btn-light btn-lg" href="/logout" role="button">Log Out</a>
+    <a class="btn btn-dark btn-lg" href="/submit" role="button">Submit a Post</a>
   </div>
 </div>
 

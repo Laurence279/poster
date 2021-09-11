@@ -3,13 +3,13 @@
 <div class="container">
   <div class="jumbotron centered">
     <i class="fas fa-hands fa-7x"></i>
-    <h1 class="display-3">Rift World</h1>
-    <p class="secret-text">Write something below</p>
+    <h1 class="display-3">Post</h1>
+    <p class="secret-text secret-text-centered">Write something below</p>
 
     <form action="/submit" method="POST">
 
       <div class="form-group">
-        <input maxlength="200" id="textInput" autocomplete="off" type="text" class="form-control text-center" name="post" placeholder="Text">
+        <input required maxlength="200" id="textInput" autocomplete="off" type="text" class="form-control text-center" name="post" placeholder="Text">
         <h6 id="charsRem" class="card-subtitle mb-2 text-muted"></h6>
       </div>
       <button type="submit" class="btn btn-dark">Submit</button>

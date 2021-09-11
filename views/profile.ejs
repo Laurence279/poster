@@ -9,24 +9,24 @@
         <div class="card" style="width: 18rem;">
             <img class="card-img-top" src="/images/profile.png" alt="Card image cap">
             <div class="card-body">
-                <h5 class="card-title"><%= ((userProfile)[0].username) %></h5>
+                <h5 class="card-title"><%= ((userProfile).username) %></h5>
             </div>
             <ul class="list-group list-group-flush">
 
-                <li class="list-group-item">Signed Up: <%= userProfile[0].profile.signedUp%></li>
-                <li class="list-group-item">Posts: <%= userProfile[0].profile.posts%></li>
-                <li class="list-group-item">Last Online: <%= userProfile[0].profile.lastOnline%></li>
+                <li class="list-group-item">Signed Up: <%= userProfile.profile.signedUp%></li>
+                <li class="list-group-item">Posts: <%= userProfile.profile.posts%></li>
+                <li class="list-group-item">Last Online: <%= userProfile.profile.lastOnline%></li>
             </ul>
         </div>
 
-        <div class="d-md-flex p-2 bd-highlight card text-center card col-md-8">
+        <div class="d-md-flex p-2 bd-highlight card text-center col-md-8 flex-column justify-content-start">
 
             <form id="form" autocomplete="off" action="/profile" method="POST">
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">Description</h5>
                     <input type="hidden" value="" name="desc" id="descInput">
-                    <p class="card-text editableProfileOption" id="desc"><%= userProfile[0].profile.description%></p>
+                    <p class="card-text editableProfileOption" id="desc"><%= userProfile.profile.description%></p>
                     <h6 hidden class="editableProfileOptionCharsRem card-subtitle mb-2 text-muted"></h6>
                 </div>
             </div>
@@ -36,7 +36,7 @@
                 <div class="card-body">
                     <h5 class="card-title">Favourite Colour</h5>
                     <input type="hidden" value="" name="colour"id="colourInput">
-                    <p class="card-text editableProfileOption" id="colour"><%= userProfile[0].profile.favColour%></p>
+                    <p class="card-text editableProfileOption" id="colour"><%= userProfile.profile.favColour%></p>
                     <h6 hidden class="editableProfileOptionCharsRem card-subtitle mb-2 text-muted"></h6>
 
                 </div>
@@ -46,22 +46,40 @@
                 <div class="card-body">
                     <h5 class="card-title">Favourite Fruit</h5>
                     <input type="hidden" value="" name="fruit" id="fruitInput">
-                    <p class="card-text editableProfileOption" id="fruit"><%= userProfile[0].profile.favFruit%></p>
+                    <p class="card-text editableProfileOption" id="fruit"><%= userProfile.profile.favFruit%></p>
                     <h6 hidden class="editableProfileOptionCharsRem card-subtitle mb-2 text-muted"></h6>
-
                 </div>
-
+                
             </div>
 
 
+
+
+
         </form>
+
+        <div id="test">
+            <div  class="border-0 card d-flex flex-column-reverse">
+                <div class="card-body">
+                    <h1 class="display-1">Poster</h1>
+                </div>
+                
+            </div>
+        </div>
+
+
+        <!-- <div class="mt-auto p-2 bd-highlight">
+            <h1 class="display-3">Poster</h1>
+        </div> -->
+
 <% if (userValidation){ %>
     <div class="mt-auto p-2 bd-highlight">
         <button form="form" type="button" id="editBtn" href="#" class="btn btn-dark">Edit Profile</a>
         
     </div>
 <% } %>
-
+    
+</div>
         </div>
 
 

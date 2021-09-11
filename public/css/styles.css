@@ -20,18 +20,22 @@ body {
 
 }
 
-.jumbotron.home{
+/* .jumbotron.home{
   background: rgb(18,140,140);
 background: linear-gradient(0deg, rgba(18,140,140,0.4906163148853291) 9%, rgba(255,255,255,1) 82%);
-}
+} */
 
 h1{
   font-family: 'Nanum Gothic Coding', monospace;
 }
 
 .navbar{
-  border-bottom: solid rgb(184, 184, 184) 2px;
-  
+  border-bottom: solid black 2px;
+
+}
+
+.custom{
+    background-color: rgb(151, 194, 194);
 }
 
 .navbar-brand{

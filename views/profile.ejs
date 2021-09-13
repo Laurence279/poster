@@ -3,10 +3,9 @@
 
 <div class="container profile">
 
-    <div class="d-md-flex p-2 bd-highlight">
+    <div class="d-md-flex p-2 ">
 
-
-        <div class="card border-dark border-right-0" style="width: 18rem;">
+        <div class="card border-dark  d-md-flex text-center" >
             <img class="card-img-top" src="/images/profile.png" alt="Card image cap">
             <div class="card-body">
                 <h5 class="card-title"><%= ((userProfile).username) %></h5>
@@ -19,7 +18,7 @@
             </ul>
         </div>
 
-        <div class="d-md-flex border-dark p-2 bd-highlight card text-center col-md-8 flex-column justify-content-start">
+        <div class="d-md-flex border-dark p-2 card text-center col-md-8 flex-column justify-content-start">
 
             <form id="form" autocomplete="off" action="/profile" method="POST">
             <div class="card">

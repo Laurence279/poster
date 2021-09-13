@@ -8,7 +8,7 @@ const colourDesc = document.getElementById("colourInput");
 const fruitDesc = document.getElementById("fruitInput");
 
 const maxDescriptionCharacters = 200;
-const maxShortCharacters = 20;
+const maxShortCharacters = 30;
 
 const editButton = document.getElementById("editBtn");
 

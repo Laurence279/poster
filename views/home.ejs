@@ -1,27 +1,34 @@
 <%- include('partials/header') %>
 
+<div class="jumbotron container-fluid px-5">
 
-<div class="jumbotron home text-center">
-  <div class="container">
+  <div class="row">
+  <div class="col-4 pr-5 text-center">
     <i class="fas fa-hands fa-7x"></i>
-    <h1 class="display-3">Welcome to Poster</h1>
+    <h1 class="display-3">Poster</h1>
     <p class="lead">Post something and introduce yourself</p>
-
-
-<div class="post-container">
-    <% posts.forEach(function(post){ %>
-      <p class="secret-text"><a href="/profile/<%=`${post.poster}`%>"><%=`${post.poster}:`%></a>
-        <%=`${post.content}`%></p>
-    <% }) %>
   </div>
 
+  <div class="col-8 mt-5">
+    <div class="post-container mt-3">
+      <% posts.forEach(function(post){ %>
+        <p class="secret-text"><a href="/profile/<%=`${post.poster}`%>"><%=`${post.poster}:`%></a>
+          <%=`${post.content}`%></p>
+      <% }) %>
+  </div>
+  <div class="text-center mb-2">
+    <a class="btn btn-dark btn-lg" href="/submit" role="button">Submit a Post</a>
 
   
-  <a class="btn btn-light btn-outline-dark btn-lg" href="/submit" role="button">Submit a Post</a>
-  <br>
-    <a class="btn btn-light btn-lg btn-outline-secondary mt-3" href="/logout" role="button">Log Out</a>
+  </div>
 
   </div>
+
+
+
+
+</div>
+
 </div>
 
 <%- include('partials/footer') %>

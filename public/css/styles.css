@@ -1,10 +1,11 @@
-
-
+html{
+  min-height: 100%;
+}
 
 body {
   background-color: #E8ECEF;
   color:black;
-  
+  min-height: 100%;
 }
 
 .profile div{
@@ -17,7 +18,7 @@ body {
 
 .jumbotron{
   margin:0;
-
+  
 }
 
 /* .jumbotron.home{
@@ -34,8 +35,9 @@ h1{
 
 }
 
+
 .custom{
-    background-color: rgb(151, 194, 194);
+    background-color: #ADB5BD;
 }
 
 .navbar-brand{
@@ -81,8 +83,12 @@ align-items:center;
 
 }
 
+.bg-inherit div{
+  background-color: inherit;
+}
+
 .post-container{
-  max-height: 400px;
+  max-height: 600px;
   overflow-y:scroll;
   margin-bottom: 2em;
 }
@@ -101,7 +107,7 @@ table a{
 }
 
 table a:hover{
-  color: #006359;
+  color: #ADB5BD;
 }
 
 a{
@@ -109,7 +115,7 @@ a{
 }
 
 a:hover{
-  color: rgb(0, 238, 255);
+  color: #ADB5BD;
 }
 
 

@@ -1,17 +1,41 @@
 <%- include('partials/header') %>
 
 
-<div class="jumbotron centered">
+<div class="container text-center mt-5">
+
   <div class="container">
     <i class="fas fa-hands fa-7x"></i>
-    <i class="bi bi-wind"></i>
     <h1 class="display-3">Poster</h1>
     <p class="lead">Register and try it out</p>
     <hr>
-    <a class="btn btn-light btn-lg btn-outline-secondary" href="/register" role="button">Register</a>
-    <a class="btn btn-light btn-outline-dark btn-lg" href="/login" role="button">Login</a>
-
+    <a class="btn btn-lg btn-dark" href="/register" role="button">Register</a>
+    <a class="btn btn-light btn-outline-secondary btn-lg" href="/login" role="button">Login</a>
   </div>
-</div>
 
-<%- include('partials/footer') %>
+  <div class="card-group mt-5 bg-inherit" >
+    <div class="card border-0">
+      <i class="far fa-comment-dots fa-5x"></i>
+      <div class="card-body">
+        <h5 class="card-title"><strong>Messageboard</strong></h5>
+        <p class="card-text">Write public updates for anyone to see.</p>
+      </div>
+    </div>
+    <div class="card border-0">
+      <i class="fas fa-chess-rook fa-5x"></i>
+      <div class="card-body">
+        <h5 class="card-title"><strong>Arena</strong></h5>
+        <p class="card-text">Get matched up in a daily tournament vs other players.</p>
+      </div>
+    </div>
+    <div class="card border-0">
+      <i class="far fa-envelope fa-5x"></i>
+      <div class="card-body">
+        <h5 class="card-title"><strong>Profile</strong></h5>
+        <p class="card-text">Display your interests or privately message other users.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

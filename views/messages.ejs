@@ -18,11 +18,14 @@
     <hr>
     
 
+<div class="post-container">
+  <% messages.forEach(function(msg){ %>
+    <p class="secret-text"><a href="/profile/<%=`${msg.sender}`%>"><%= `${msg.sender}:` %></a>
+      <%=`${msg.content}`%></p>
+  <% }) %>
 
-    <% messages.forEach(function(msg){ %>
-      <p class="secret-text"><a href="/profile/<%=`${msg.sender}`%>"><%= `${msg.sender}` %></a>
-        <%=`: ${msg.content}`%></p>
-    <% }) %>
+</div>
+
 
     <hr>
 

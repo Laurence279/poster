@@ -1,21 +1,20 @@
 <%- include('partials/header') %>
 
-<div class="container mt-5">
-  <h1>Reset Passsword</h1>
+<div class="container mt-5 w-50 py-5">
+  <h1 class="text-center">Reset Passsword</h1>
 
   <div class="row">
-    <div class="col-sm-8">
-      <div class="card">
+    <div class="col-sm-8  mx-auto">
+      <div class="card p-3 border-dark" style="background-color: #DEE2E6;">
         <div class="card-body">
 
           <!-- Makes POST request to /reset route -->
           <form autocomplete="off" action="/reset" method="POST">
             <div class="form-group">
               <label for="text">Email</label>
-              <input type="email" required autocomplete="off" class="form-control" name="email">
+              <input type="email" required autocomplete="off" class="form-control border-dark" name="email">
             </div>
             <button type="submit" class="btn btn-dark">Reset</button>
-            <a href="/login" class="btn btn-light">Go Back</a>
           </form>
 
         </div>
@@ -47,4 +46,6 @@
   </div>
 </div>
 
-<%- include('partials/footer') %>
+</body>
+</html>
+

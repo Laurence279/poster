@@ -1,24 +1,24 @@
 <%- include('partials/header') %>
 
-<div class="container mt-5">
+<div class="container mt-5 w-50 py-5">
   <h1 class="text-center">Login</h1>
 
   <div class="row ">
     <div class="col-sm-8 mx-auto">
-      <div class="card ">
+      <div class="card p-3 border-dark" style="background-color: #DEE2E6;">
         <div class="card-body">
 
           <!-- Makes POST request to /login route -->
           <form autocomplete="off" action="/login" method="POST">
             <div class="form-group">
               <label for="text">Username</label>
-              <input required type="text" autocomplete="off" class="form-control" name="username">
+              <input required type="text" autocomplete="off" class="form-control border-dark" name="username">
             </div>
             <div class="form-group">
               <label for="password">Password</label>
-              <input required autocomplete="off" type="password" class="form-control" name="password">
+              <input required autocomplete="off" type="password" class="form-control border-dark" name="password">
             </div>
-            <button type="submit" class="btn btn-light btn-outline-dark btn-md mt-3">Login</button>
+            <button type="submit" class="btn btn-dark btn-md mt-3">Login</button>
             <a href="/reset" class="btn btn-light btn-md btn-outline-secondary mt-3">Forgot Password</a>
           </form>
 
@@ -51,4 +51,6 @@
   </div>
 </div>
 
-<%- include('partials/footer') %>
+</body>
+</html>
+

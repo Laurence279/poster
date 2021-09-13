@@ -416,6 +416,7 @@ app.post("/arena", function (req, res) {
     RiftArenaPlayer.findOne(user, function (err, result) {
         if (err) {
             console.log(err);
+
         } else if (!result) {
             const newArenaPlayer = new RiftArenaPlayer({
                 name: req.user.username
@@ -755,7 +756,7 @@ app.get("/profile/:profileName", function (req, res) {
                 }, req.body.password, function (err, user) {
                     if (err) {
                         console.log(err);
-                        res.redirect("/register");
+                        res.send("User already exists!");
                     } else {
                         passport.authenticate("local")(req, res, function () {
                             res.redirect("/home");

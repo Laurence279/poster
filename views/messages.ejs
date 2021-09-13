@@ -18,7 +18,7 @@
     <hr>
     
 
-<div class="post-container">
+<div id="scroll" class="post-container">
   <% messages.forEach(function(msg){ %>
     <p class="secret-text"><a href="/profile/<%=`${msg.sender}`%>"><%= `${msg.sender}:` %></a>
       <%=`${msg.content}`%></p>
@@ -41,7 +41,7 @@
         <br>         <p id="usernameResponseHidden" hidden></p>  <br>
         <label for="messageInput">Message:</label>
         <br>
-        <textarea required cols="80" rows="5" placeholder="Message" id="messageInput" name="message"></textarea>
+        <textarea required cols="50" rows="5" id="messageInput" name="message"></textarea>
 
       </div>
     <br>
@@ -79,6 +79,16 @@ else{
   $('#usernameResponseHidden').removeAttr("hidden")
   $('#sendBtn').addClass("disabled");
 }})})
+
+
+
+function scrollToBottom(e){
+  e.scrollTop = e.scrollHeight - e.getBoundingClientRect().height;
+}
+
+scrollToBottom(document.getElementById("scroll"));
+
+
 
   </script>
 

@@ -3,14 +3,14 @@
 <div class="jumbotron container-fluid px-5">
 
   <div class="row">
-  <div class="col-md-4 pr-5 text-center">
+  <div class="col-md-4 pr-md-5 text-center">
     <i class="fas fa-hands fa-7x"></i>
     <h1 class="display-3">Poster</h1>
     <p class="lead">Post something and introduce yourself</p>
   </div>
 
-  <div class="col-md-8 mt-5">
-    <div class="post-container mt-3">
+  <div class="col-md-8 mt-md-5 mx-0">
+    <div id="scroll" class="post-container mt-3">
       <% posts.forEach(function(post){ %>
         <p class="secret-text"><a href="/profile/<%=`${post.poster}`%>"><%=`${post.poster}:`%></a>
           <%=`${post.content}`%></p>
@@ -30,5 +30,15 @@
 </div>
 
 </div>
+
+<script>
+
+function scrollToBottom(e){
+  e.scrollTop = e.scrollHeight - e.getBoundingClientRect().height;
+}
+
+scrollToBottom(document.getElementById("scroll"));
+
+</script>
 
 <%- include('partials/footer') %>

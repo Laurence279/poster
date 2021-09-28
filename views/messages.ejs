@@ -65,7 +65,6 @@ $('#sendBtn').on('click',function(){
 });
   }
 })
-
 $('#usernameInput').on('change', function() {
   $.get('/usercheck?username='+$('#usernameInput').val(), function(response) {  
     $('#usernameResponseHidden').text(response.message);
